@@ -1,16 +1,33 @@
-# This is a sample Python script.
+import uvicorn
+from fastapi import FastAPI
+from repoimple import UserRepository
+from schemas import CreateUser
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
-
-
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+user_repo_prod = UserRepository()
 
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
+def create_app(repo: UserRepository) -> FastAPI:
+    application = FastAPI()
+    application.state.repo = repo
+    return application
+app = create_app(repo=user_repo_prod)
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+
+@app.post("/app/v1/users")
+def create_user(data: CreateUser):
+    new_user = app.state.repo.save_user(name=data.user_name)
+    return {"user_id": new_user.id,
+            "user_name": new_user.name}
+
+
+@app.get("/app/v1/users/{user_id}")
+def get_user(user_id: int):
+    user = app.state.repo.download_user(user_id=user_id)
+    if user:
+        return {"user_id": user.id,
+                "user_name": user.name}
+    return None
+
+
+if __name__ == "__main__":
+    uvicorn.run("main_service:app")
