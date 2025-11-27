@@ -26,11 +26,11 @@ class UserRepository(UserAbstraction):
 
 @dataclass()
 class MokUserRepository(UserAbstraction):
-    store : dict[str, User] | None
-    test_user: User | None
+    store : dict[str | int, User] | None
 
     def save_user(self, name: str) -> User:
         return self.store.get(name)
 
     def download_user(self, user_id: int) -> User:
-        return self.test_user
+        return self.store.get(user_id)
+

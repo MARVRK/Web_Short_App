@@ -6,7 +6,7 @@ from fastapi.testclient import TestClient
 
 def test_create_user():
     # Given
-    repo_user_test = MokUserRepository(store={"Test_user":User(id=1, name="Test_user")}, test_user=None)
+    repo_user_test = MokUserRepository(store={"Test_user":User(id=1, name="Test_user")})
     test_app = create_app(repo=repo_user_test)
     client = TestClient(test_app)
     # When
@@ -18,7 +18,7 @@ def test_create_user():
 
 def test_get_user():
     # Given
-    repo_user_test = MokUserRepository(test_user=User(id=1, name="Test_user"), store=None)
+    repo_user_test = MokUserRepository(store={1:User(id=1, name="Test_user")})
     test_app = create_app(repo=repo_user_test)
     client = TestClient(test_app)
     # When
