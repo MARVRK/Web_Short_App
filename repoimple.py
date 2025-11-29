@@ -25,7 +25,7 @@ class UserRepository(UserAbstraction):
         return db.get_user(user_id)
 
 @dataclass()
-class MokUserRepository(UserAbstraction):
+class MockUserRepository(UserAbstraction):
     store : dict[str | int, User] | None
 
     def save_user(self, name: str) -> User:
